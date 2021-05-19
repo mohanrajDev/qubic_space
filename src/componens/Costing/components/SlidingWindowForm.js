@@ -12,7 +12,7 @@ import { Row, Col } from "react-bootstrap";
 const formFields = [
   {
     name: "frame",
-    label: "Frame Model nale",
+    label: "Frame Model Name",
     placeholder: "frame model name",
     type: "text",
   },
@@ -102,7 +102,7 @@ const messFormFields = [
   },
 ];
 
-const SlidingWindowForm = () => {
+const SlidingWindowForm = ({ trackerOptions }) => {
   const handleSubmit = (formState) => {
     console.log("form state", formState);
   };
@@ -111,28 +111,37 @@ const SlidingWindowForm = () => {
     <Form onSubmit={handleSubmit}>
       {({ formProps }) => (
         <form {...formProps}>
-          <Row>
-            {formFields.map((formField) => (
-              <Col md={3}>
-                <Field
-                  label={formField.label}
-                  isRequired
-                  name={formField.name}
-                  defaultValue=""
-                >
-                  {({ fieldProps, error, meta: { valid } }) => (
-                    <Fragment>
-                      <Textfield
-                        {...fieldProps}
-                        type={formField.type}
-                        placeholder={formField.placeholder}
-                      />
-                    </Fragment>
-                  )}
-                </Field>
-              </Col>
+          <>
+            {trackerOptions.map((item) => (
+              <Row>
+                <Col md="12 mt-4">
+                  <h4>
+                    {item.label}
+                  </h4>
+                </Col>
+                {formFields.map((formField) => (
+                  <Col md={3}>
+                    <Field
+                      label={formField.label}
+                      isRequired
+                      name={formField.name}
+                      defaultValue=""
+                    >
+                      {({ fieldProps, error, meta: { valid } }) => (
+                        <Fragment>
+                          <Textfield
+                            {...fieldProps}
+                            type={formField.type}
+                            placeholder={formField.placeholder}
+                          />
+                        </Fragment>
+                      )}
+                    </Field>
+                  </Col>
+                ))}
+              </Row>
             ))}
-          </Row>
+          </>
           <Row>
             <Col md={12}>
               <h4 class="mt-4">Sutter / Sash</h4>

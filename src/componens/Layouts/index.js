@@ -8,7 +8,9 @@ import Footer from "./../Footer";
 import { Switch, Route, Redirect } from "react-router-dom";
 import Costing from "../Costing";
 import { Container } from "react-bootstrap";
-import Hardware from "../hardware";
+import Hardware from "../Hardware";
+import HardwareDetail from "../HardwareDetail";
+
 
 const Layouts = () => {
   return (
@@ -22,6 +24,7 @@ const Layouts = () => {
           <Route exact path="/services" component={Service} />
           <Route exact path="/costing" component={Costing} />
           <Route exact path="/hardware" component={Hardware} />
+          <Route exact path="/hardware-details" component={HardwareDetail} />
         </Switch>
       </Container>
       <Footer />

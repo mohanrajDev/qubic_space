@@ -69,29 +69,11 @@ const Costing = ({ history }) => {
           </Col>
         ))}
       </Row>
-
-      <Row className="mt-4">
-        {trackerOptions.map((item) => (
-          <Col md={2}>
-            <Radio
-              value={item.value}
-              label={item.label}
-              name={item.name}
-              testId={uuid()}
-              isChecked={item.value === track}
-              onChange={({ currentTarget: { value } }) =>
-                setTrack(Number(value))
-              }
-              isDisabled={!windowOption.profile}
-            />
-          </Col>
-        ))}
-      </Row>
       <Row>
         {windowOption.type && windowOption.profile && (
           <Col>
             {windowOption.type && windowOption.type.value === "sliding" && (
-              <SlidingWindowForm />
+                  <SlidingWindowForm trackerOptions={trackerOptions} />
             )}
             {windowOption.type && windowOption.type.value === "casement" && (
               <CasementWindowForm />
