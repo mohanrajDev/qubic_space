@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@atlaskit/button": "^15.1.5",
+    "@atlaskit/flag": "^14.3.1",
     "@atlaskit/form": "^8.2.2",
     "@atlaskit/icon": "^21.5.0",
     "@atlaskit/modal-dialog": "^11.4.1",

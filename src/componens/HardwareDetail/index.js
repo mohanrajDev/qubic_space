@@ -10,15 +10,25 @@ import Button from "@atlaskit/button";
 import Textfield from "@atlaskit/textfield";
 import { Row, Col } from "react-bootstrap";
 import Modal, { ModalTransition } from "@atlaskit/modal-dialog";
+import { AutoDismissFlag, FlagGroup } from "@atlaskit/flag";
+import SuccessIcon from "@atlaskit/icon/glyph/check-circle";
+import { G500 } from '@atlaskit/theme/colors';
 
 const HardwareDetail = () => {
   const [hardware, setHardware] = useState({});
   const [isOpen, setIsOpen] = useState(false);
   const close = () => setIsOpen(false);
   const open = () => setIsOpen(true);
+  const [showMessage, setShowMessage] = useState(false);
 
   const handleSubmit = (formState) => {
     console.log("form state", formState);
+    close();
+    setShowMessage(true);
+  };
+
+  const onHideMessage = () => {
+    setShowMessage(false);
   };
 
   const slidingHardwareForm = [
@@ -225,7 +235,10 @@ const HardwareDetail = () => {
       <ModalTransition>
         {isOpen && (
           <Modal
-            actions={[{ text: "Save", onClick: close }, { text: "Cancle" }]}
+            actions={[
+              { text: "Save", onClick: handleSubmit },
+              { text: "Cancle" },
+            ]}
             onClose={close}
             heading="Save Hardware Details"
           >
@@ -245,6 +258,19 @@ const HardwareDetail = () => {
           </Modal>
         )}
       </ModalTransition>
+      {showMessage && (
+        <FlagGroup>
+          <AutoDismissFlag
+            isAutoDismiss={true}
+            id={`sucess-message`}
+            icon={<SuccessIcon label="Success" size="medium" primaryColor={G500}/>}
+            key={`sucess-message`}
+            title={`Hardware saved sucessfully...`}
+            description=""
+            onDismissed={onHideMessage}
+          />
+        </FlagGroup>
+      )}
     </>
   );
 };
