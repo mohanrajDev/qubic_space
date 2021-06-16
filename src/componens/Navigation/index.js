@@ -9,29 +9,17 @@ const menus = [
     url: "/",
   },
   {
-    name: "About Us",
-    url: "/about-us",
-  },
-  {
-    name: "Product",
-    url: "/products",
-  },
-  {
-    name: "Services",
-    url: "/services",
-  },
-  {
-    name: "Contact Us",
-    url: "/contact-us",
+    name: "Quotations",
+    url: "/quotation",
   },
 ];
 const Navigation = () => {
   return (
     <Navbar bg="light" expand="lg" sticky="top">
-      <Navbar.Brand href="">Qubix Space</Navbar.Brand>
+      <Navbar.Brand href="/">Qubix Space</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="ml-auto">
+        <Nav className="mr-auto">
           {menus.map((menu) => (
             <Nav.Link href={menu.url}>{menu.name}</Nav.Link>
           ))}

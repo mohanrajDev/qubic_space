@@ -1,0 +1,206 @@
+import React, { Fragment, useState, useEffect } from "react";
+import Form, {
+  ErrorMessage,
+  HelperMessage,
+  Field,
+  FormFooter,
+  ValidMessage,
+} from "@atlaskit/form";
+import Textfield from "@atlaskit/textfield";
+import { Row, Col, Table } from "react-bootstrap";
+import { useIndexedDB } from "react-indexed-db";
+import "./index.scss";
+import myimage from "../../assets/1.png";
+import Modal, { ModalTransition } from "@atlaskit/modal-dialog";
+import Button from "@atlaskit/button/standard-button";
+import ButtonGroup from "@atlaskit/button/button-group";
+import Select from "@atlaskit/select";
+import { WindowType } from "../../model";
+
+const clientForm = [
+  {
+    name: "name",
+    label: "Name",
+    type: "text",
+    placeholder: "enter name",
+  },
+  {
+    name: "email",
+    label: "Email",
+    type: "email",
+    placeholder: "enter email",
+  },
+  {
+    name: "phone",
+    type: "phone",
+    label: "Phone",
+    placeholder: "enter phone",
+  },
+  {
+    name: "address",
+    label: "Address",
+    type: "text",
+    placeholder: "enter address",
+  },
+];
+
+const quotationForm1 = [
+  {
+    name: "hardware_type",
+    label: "Hardware Type",
+    type: "select",
+    placeholder: "select hardware",
+  },
+  {
+    name: "glass",
+    label: "Select Glass",
+    type: "select",
+    placeholder: "select glass",
+  },
+  {
+    name: "mess",
+    label: "Mess",
+    type: "select",
+    placeholder: "select mess",
+  },
+];
+
+const quotationForm2 = [
+  {
+    name: "quantity",
+    label: "Quantity",
+    type: "number",
+    placeholder: "enter quantity",
+  },
+  {
+    name: "width",
+    label: "Width",
+    type: "number",
+    placeholder: "enter width",
+  },
+  {
+    name: "height",
+    label: "Height",
+    type: "number",
+    placeholder: "enter height",
+  },
+  {
+    name: "window_location",
+    label: "Window Location",
+    type: "text",
+    placeholder: "enter window location",
+  },
+];
+
+const Quotation = () => {
+  const handleSubmit = (formState) => {
+    console.log("form state", formState);
+  };
+
+  const [isOpen, setIsOpen] = useState(false);
+  const close = () => setIsOpen(false);
+  const open = () => setIsOpen(true);
+
+  const [client, setClient] = useState({
+    name: null,
+    email: null,
+    phone: null,
+    address: null,
+    created_at: null,
+  });
+
+  return (
+    <>
+      <Row>
+        <Form onSubmit={handleSubmit}>
+          {({ formProps }) => (
+            <form {...formProps}>
+                <Col md={12}>
+                  <h4 class="mt-4">Client Details</h4>
+                </Col>
+                {clientForm.map((formField) => (
+                  <Col md={3}>
+                    <Field
+                      label={formField.label}
+                      isRequired
+                      name={`client_${formField.name}`}
+                      defaultValue=""
+                    >
+                      {({ fieldProps, error, meta: { valid } }) => (
+                        <Fragment>
+                          <Textfield
+                            {...fieldProps}
+                            type={formField.type}
+                            placeholder={formField.placeholder}
+                            onChange={({ target: { value } }) => {}}
+                          />
+                        </Fragment>
+                      )}
+                    </Field>
+                  </Col>
+                ))}
+            </form>
+          )}
+        </Form>
+      </Row>
+      <Row>
+        <Col>
+        </Col>
+      </Row>
+      <Row className="mt-4">
+        <Col md={4}>
+          <div className="image-frame">
+            <img src={myimage} />
+          </div>
+        </Col>
+        <Col md={8}>
+          <Form onSubmit={handleSubmit}>
+            {({ formProps }) => (
+              <form {...formProps}>
+                <Row>
+                  {quotationForm1.map((formField) => (
+                    <Col md={4}>
+                      {formField.type === "select" ? (
+                        <Field label={formField.label} name={formField.name}>
+                          {({ fieldProps }) => (
+                            <Select
+                              className="single-select"
+                              classNamePrefix="react-select"
+                              options={WindowType}
+                              placeholder={formField.placeholder}
+                            />
+                          )}
+                        </Field>
+                      ) : (
+                        <Field
+                          label={formField.label}
+                          isRequired
+                          name={`sutter_${formField.name}`}
+                          defaultValue=""
+                        >
+                          {({ fieldProps, error, meta: { valid } }) => (
+                            <Fragment>
+                              <Textfield
+                                {...fieldProps}
+                                type={formField.type}
+                                placeholder={formField.placeholder}
+                                onChange={({ target: { value } }) => {}}
+                              />
+                            </Fragment>
+                          )}
+                        </Field>
+                      )}
+                    </Col>
+                  ))}
+                  <Col md={4}></Col>
+                </Row>
+              </form>
+            )}
+          </Form>
+        </Col>
+      </Row>
+    </>
+  );
+};
+
+export default Quotation;

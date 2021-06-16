@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import Form, {
   ErrorMessage,
   HelperMessage,
@@ -8,10 +8,11 @@ import Form, {
 } from "@atlaskit/form";
 import Textfield from "@atlaskit/textfield";
 import { Row, Col } from "react-bootstrap";
+import { useIndexedDB } from "react-indexed-db";
 
 const formFields = [
   {
-    name: "frame",
+    name: "frame_name",
     label: "Frame Model nale",
     placeholder: "frame model name",
     type: "text",
@@ -23,19 +24,19 @@ const formFields = [
     type: "number",
   },
   {
-    name: "beading_frame",
+    name: "beading",
     label: "Beading",
     placeholder: "frame model name",
     type: "text",
   },
   {
-    name: "beading_frame_price",
+    name: "beading_price",
     label: "Beading Price",
     placeholder: "price/sqft",
     type: "number",
   },
   {
-    name: "re-enforcement",
+    name: "re_enforcement",
     label: "Re-Enforcement",
     placeholder: "price/sqft",
     type: "number",
@@ -48,10 +49,43 @@ const formFields = [
   },
 ];
 
-const FixedWindowForm = () => {
+const FixedWindowForm = ({ id }) => {
   const handleSubmit = (formState) => {
     console.log("form state", formState);
   };
+
+  const { update, getByID } = useIndexedDB("hardwares");
+  const [hardware, setHardware] = useState(null);
+
+  useEffect(() => {
+    getByID(id).then((hardwareData) => {
+      setHardware(hardwareData);
+    });
+  }, []);
+
+  const [fixedWindow, setFixedWindow] = useState({
+    frame_name: null,
+    frame_price: null,
+    beading: null,
+    beading_price: null,
+    re_enforcement: null,
+    louver_cap: null,
+  });
+
+  useEffect(() => {
+    if (hardware) {
+      let currentHardware = hardware;
+      currentHardware["fixed_window"] = fixedWindow;
+      update(currentHardware).then(
+        (id) => {
+          console.log("Updated: ", id);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    }
+  }, [fixedWindow]);
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -64,7 +98,7 @@ const FixedWindowForm = () => {
                   label={formField.label}
                   isRequired
                   name={formField.name}
-                  defaultValue=""
+                  defaultValue={fixedWindow[formField.name]}
                 >
                   {({ fieldProps, error, meta: { valid } }) => (
                     <Fragment>
@@ -72,6 +106,12 @@ const FixedWindowForm = () => {
                         {...fieldProps}
                         type={formField.type}
                         placeholder={formField.placeholder}
+                        onChange={({ target: { value } }) => {
+                          setFixedWindow({
+                            ...fixedWindow,
+                            [formField.name]: value,
+                          });
+                        }}
                       />
                     </Fragment>
                   )}

@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import Form, {
   ErrorMessage,
   HelperMessage,
@@ -8,11 +8,12 @@ import Form, {
 } from "@atlaskit/form";
 import Textfield from "@atlaskit/textfield";
 import { Row, Col } from "react-bootstrap";
+import { useIndexedDB } from "react-indexed-db";
 
 const formFields = [
   {
-    name: "frame",
-    label: "Frame Model nale",
+    name: "frame_name",
+    label: "Frame Model Name",
     placeholder: "frame model name",
     type: "text",
   },
@@ -23,19 +24,19 @@ const formFields = [
     type: "number",
   },
   {
-    name: "beading_frame",
+    name: "beading",
     label: "Beading",
     placeholder: "frame model name",
     type: "text",
   },
   {
-    name: "beading_frame_price",
+    name: "beading_price",
     label: "Beading Price",
     placeholder: "price/sqft",
     type: "number",
   },
   {
-    name: "re-enforcement",
+    name: "re_enforcement",
     label: "Re-Enforcement",
     placeholder: "price/sqft",
     type: "number",
@@ -50,47 +51,90 @@ const formFields = [
 
 const sutterFormFields = [
   {
-    name: "sutter_frame",
+    name: "frame_name",
     label: "Sutter Frame",
     placeholder: "frame model name",
     type: "text",
   },
   {
-    name: "sutter_frame_price",
+    name: "frame_price",
     label: "Sutter Frame Price",
     placeholder: "price/sqft",
     type: "number",
   },
   {
-    name: "sutter_beating",
+    name: "beating",
     label: "Sutter Beating",
     placeholder: "frame model name",
     type: "text",
   },
   {
-    name: "sutter_beating_price",
+    name: "beating_price",
     label: "Sutter Beating Price",
     placeholder: "price/sqft",
     type: "number",
   },
   {
-    name: "re-enforcement",
+    name: "re_enforcement",
     label: "Re-Enforcement",
     placeholder: "price/sqft",
     type: "number",
   },
   {
-    name: "shutter_gasket",
+    name: "gasket",
     label: "Shutter Gasket",
     placeholder: "price/sqft",
     type: "number",
   },
 ];
 
-const CasementWindowForm = () => {
+const CasementWindowForm = ({ id }) => {
   const handleSubmit = (formState) => {
     console.log("form state", formState);
   };
+
+  const { update, getByID } = useIndexedDB("hardwares");
+  const [hardware, setHardware] = useState(null);
+
+  useEffect(() => {
+    getByID(id).then((hardwareData) => {
+      setHardware(hardwareData);
+    });
+  }, []);
+
+  const [casementWindow, setCasementWindow] = useState({
+    frame: {
+      frame_name: null,
+      frame_price: null,
+      beading: null,
+      beading_price: null,
+      re_enforcement: null,
+      gasket: null,
+    },
+    sutter: {
+      frame_name: null,
+      frame_price: null,
+      beating: null,
+      beating_price: null,
+      re_enforcement: null,
+      gasket: null,
+    },
+  });
+
+  useEffect(() => {
+    if (hardware) {
+      let currentHardware = hardware;
+      currentHardware["casement_window"] = casementWindow;
+      update(currentHardware).then(
+        (id) => {
+          console.log("Updated: ", id);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    }
+  }, [casementWindow]);
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -102,8 +146,8 @@ const CasementWindowForm = () => {
                 <Field
                   label={formField.label}
                   isRequired
-                  name={formField.name}
-                  defaultValue=""
+                  name={`frame_${formField.name}`}
+                  defaultValue={casementWindow["frame"][formField.name]}
                 >
                   {({ fieldProps, error, meta: { valid } }) => (
                     <Fragment>
@@ -111,6 +155,15 @@ const CasementWindowForm = () => {
                         {...fieldProps}
                         type={formField.type}
                         placeholder={formField.placeholder}
+                        onChange={({ target: { value } }) => {
+                          setCasementWindow({
+                            ...casementWindow,
+                            frame: {
+                              ...casementWindow.frame,
+                              [formField.name]: value,
+                            },
+                          });
+                        }}
                       />
                     </Fragment>
                   )}
@@ -127,8 +180,8 @@ const CasementWindowForm = () => {
                 <Field
                   label={formField.label}
                   isRequired
-                  name={formField.name}
-                  defaultValue=""
+                  name={`sutter_${formField.name}`}
+                  defaultValue={casementWindow["sutter"][formField.name]}
                 >
                   {({ fieldProps, error, meta: { valid } }) => (
                     <Fragment>
@@ -136,6 +189,15 @@ const CasementWindowForm = () => {
                         {...fieldProps}
                         type={formField.type}
                         placeholder={formField.placeholder}
+                        onChange={({ target: { value } }) => {
+                          setCasementWindow({
+                            ...casementWindow,
+                            sutter: {
+                              ...casementWindow.sutter,
+                              [formField.name]: value,
+                            },
+                          });
+                        }}
                       />
                     </Fragment>
                   )}
